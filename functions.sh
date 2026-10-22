@@ -7,15 +7,58 @@ INSTALLATION_METHOD=true
 CLEAR_PREVIOUS_ARM=false
 
 # define functions here
+fix_libdisplay_info () {
+	# cage / wlroots from extra pulls libdisplay-info 0.2 (.so.2), replacing holo's 0.3 (.so.3) that KWin needs.
+	# keep a private copy of .so.2 for wlroots and put holo's 0.3 back so Desktop Mode still starts
+	if ldd /usr/bin/kwin_wayland | grep -q 'libdisplay-info.so.3 => not found'
+	then
+		echo Restoring libdisplay-info needed by KDE Plasma Desktop Mode.
+		echo -e "$current_password\n" | sudo -S mkdir -p /usr/lib/waydroid-compat
+		echo -e "$current_password\n" | sudo -S cp -L /usr/lib/libdisplay-info.so.2 /usr/lib/waydroid-compat/libdisplay-info.so.2
+		echo -e "$current_password\n" | sudo -S sh -c 'echo /usr/lib/waydroid-compat > /etc/ld.so.conf.d/waydroid-compat.conf'
+		echo -e "$current_password\n" | sudo -S pacman -Sdd --noconfirm holo-$STEAMOS_VERSION/libdisplay-info &>> $LOGFILE
+		echo -e "$current_password\n" | sudo -S ldconfig
+	fi
+
+	if ldd /usr/bin/kwin_wayland /usr/bin/cage | grep -q 'not found'
+	then
+		echo Error restoring libdisplay-info! Desktop Mode or cage may not start.
+		cleanup_exit
+	else
+		echo libdisplay-info is good for both Desktop Mode and cage.
+	fi
+}
+
+remove_waydroid_packages () {
+	# shared by cleanup_exit and the Waydroid Toolbox uninstall, takes the sudo password as $1
+	local password=$1
+	local pkgs
+	local version
+
+	# only pass packages that are actually installed, pacman -R aborts entirely on a missing one.
+	# plymouth is left alone, it is required by jupiter-hw-support
+	pkgs=$(pacman -Qq libglibutil libgbinder python-gbinder waydroid wlroots wlroots0.18 libliftoff \
+		cage wlr-randr binder_linux-dkms fakeroot debugedit dkms \
+		linux-neptune-$(uname -r | cut -d "-" -f5)-headers 2> /dev/null)
+	[ -n "$pkgs" ] && echo -e "$password\n" | sudo -S pacman -R --noconfirm $pkgs
+
+	# put holo's libdisplay-info back if cage replaced it, then drop the compat copy
+	if ldd /usr/bin/kwin_wayland | grep -q 'libdisplay-info.so.3 => not found'
+	then
+		version=$(grep -i version_id /etc/os-release | cut -d "=" -f2 | cut -d "." -f1-2)
+		echo -e "$password\n" | sudo -S pacman -Sdd --noconfirm holo-$version/libdisplay-info
+	fi
+	echo -e "$password\n" | sudo -S rm -rf /usr/lib/waydroid-compat /etc/ld.so.conf.d/waydroid-compat.conf
+	echo -e "$password\n" | sudo -S ldconfig
+}
+
 cleanup_exit () {
 	# call this function to perform cleanup when a sanity check fails
 	
 	echo Something went wrong! Performing cleanup. Run the script again to install waydroid.
 	
 	# remove installed packages
-	echo -e "$current_password\n" | sudo -S pacman -R --noconfirm libglibutil libgbinder \
-		python-gbinder waydroid wlroots cage wlr-randr binder_linux-dkms fakeroot debugedit \
-		dkms plymouth linux-neptune-$(uname -r | cut -d "-" -f5)-headers &> /dev/null
+	remove_waydroid_packages "$current_password" &> /dev/null
 	
 	# delete the waydroid directories
 	echo -e "$current_password\n" | sudo -S rm -rf $HOME/.waydroid /var/lib/waydroid &> /dev/null

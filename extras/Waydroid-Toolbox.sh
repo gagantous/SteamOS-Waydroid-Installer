@@ -303,11 +303,11 @@ UNINSTALL_Choice=$(zenity --width 600 --height 220 --list --radiolist --multiple
 		exec > >(tee -a "$LOG_PIPE") 2>&1
 
 		echo Disable the steamos readonly
-		echo -e $PASSWORD\n | sudo -S steamos-readonly disable
+		echo -e "$PASSWORD\n" | sudo -S steamos-readonly disable
 	
 		echo Remove the kernel module and waydroid packages installed
 		echo -e "$PASSWORD\n" | sudo -S systemctl stop waydroid-container
-		echo -e "$PASSWORD\n" | sudo -S pacman -R --noconfirm binder_linux-dkms fakeroot debugedit dkms plymouth libglibutil libgbinder python-gbinder waydroid wlroots cage wlr-randr
+		remove_waydroid_packages "$PASSWORD"
 	
 		echo Delete the waydroid directories and config
 		echo -e "$PASSWORD\n" | sudo -S rm -rf ~/waydroid /var/lib/waydroid $HOME/.waydroid /etc/waydroid-extra ~/AUR
@@ -352,10 +352,10 @@ UNINSTALL_Choice=$(zenity --width 600 --height 220 --list --radiolist --multiple
 		
 		echo Remove the kernel module and waydroid packages installed
 		echo -e "$PASSWORD\n" | sudo -S systemctl stop waydroid-container
-		echo -e "$PASSWORD\n" | sudo -S pacman -R --noconfirm binder_linux-dkms fakeroot debugedit dkms plymouth libglibutil libgbinder python-gbinder waydroid wlroots cage wlr-randr
+		remove_waydroid_packages "$PASSWORD"
 			
 		echo Delete the waydroid directories and config
-		echo -e $PASSWORD\n | sudo -S rm -rf ~/waydroid /var/lib/waydroid $HOME/.waydroid /etc/waydroid-extra ~/.local/share/waydroid ~/.local/share/applications/waydroid* ~/AUR
+		echo -e "$PASSWORD\n" | sudo -S rm -rf ~/waydroid /var/lib/waydroid $HOME/.waydroid /etc/waydroid-extra ~/.local/share/waydroid ~/.local/share/applications/waydroid* ~/AUR
 	
 		echo Delete waydroid config and scripts
 		echo -e "$PASSWORD\n" | sudo -S rm /etc/sudoers.d/zzzzzzzz-waydroid /etc/modules-load.d/waydroid_binder.conf /etc/modprobe.d/waydroid_binder.conf \

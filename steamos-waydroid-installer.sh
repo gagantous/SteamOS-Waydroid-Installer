@@ -82,7 +82,8 @@ else
 	cleanup_exit
 fi
 
-if awk "BEGIN {exit ! ($STEAMOS_VERSION == $BASE_VERSION)}"
+# build binder whenever the running kernel lacks it (SteamOS 3.7, and 3.8 with kernel 6.18+)
+if ! zgrep -qE 'CONFIG_ANDROID_BINDER_IPC=(y|m)' /proc/config.gz
 then
 
 	# lets install the packages needed to build binder
@@ -118,35 +119,43 @@ then
 		exit
 	fi
 
-	# ok lets install additional packages from pacman repo
-	echo -e "$current_password\n" | sudo -S pacman -S --noconfirm wlroots cage wlr-randr &>> $LOGFILE
-
-	if [ $? -eq 0 ]
-	then
-		echo cage has been installed!
-	else
-		echo Error installing cage. Run the script again to install waydroid.
-		cleanup_exit
-	fi
-
 	# waydroid binder configuration file
 	cd $WORKING_DIR
 	echo -e "$current_password\n" | sudo -S cp extras/waydroid_binder.conf /etc/modules-load.d/waydroid_binder.conf
 	echo -e "$current_password\n" | sudo -S cp extras/options-waydroid_binder.conf /etc/modprobe.d/waydroid_binder.conf
+fi
 
-elif awk "BEGIN {exit ! ($STEAMOS_VERSION > $BASE_VERSION)}"
+# ok lets install cage from pacman repo
+echo "*** pacman install cage ***" &>> $LOGFILE
+case "$STEAMOS_VERSION" in
+	3.7)
+		# 3.7 has a standalone wlroots package that cage uses
+		echo SteamOS 3.7 detected. Installing wlroots, cage and wlr-randr.
+		echo -e "$current_password\n" | sudo -S pacman -S --noconfirm wlroots cage wlr-randr &>> $LOGFILE
+		;;
+	3.8)
+		# 3.8 cage pulls wlroots0.18, which downgrades libdisplay-info and breaks KWin, fixed below
+		echo SteamOS 3.8 detected. Installing cage and wlr-randr.
+		echo -e "$current_password\n" | sudo -S pacman -S --noconfirm cage wlr-randr &>> $LOGFILE
+		;;
+	*)
+		echo SteamOS $STEAMOS_VERSION detected. Not tested, installing cage and wlr-randr like on 3.8.
+		echo -e "$current_password\n" | sudo -S pacman -S --noconfirm cage wlr-randr &>> $LOGFILE
+		;;
+esac
+
+if [ $? -eq 0 ]
 then
+	echo cage has been installed!
+else
+	echo Error installing cage. Run the script again to install waydroid.
+	cleanup_exit
+fi
 
-	# ok lets install additional packages from pacman repo
-	echo -e "$current_password\n" | sudo -S pacman -S --noconfirm cage wlr-randr &>> $LOGFILE
-
-	if [ $? -eq 0 ]
-	then
-		echo cage has been installed!
-	else
-		echo Error installing cage. Run the script again to install waydroid.
-		cleanup_exit
-	fi
+# make sure installing cage did not break KWin / Desktop Mode. only does work if libdisplay-info was replaced
+if [ "$STEAMOS_VERSION" != "3.7" ]
+then
+	fix_libdisplay_info
 fi
 
 # ok lets install precompiled waydroid
