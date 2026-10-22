@@ -17,7 +17,7 @@ LOGFILE=$WORKING_DIR/logfile
 BINDER_AUR=https://aur.archlinux.org/binder_linux-dkms.git
 BINDER_GITHUB=https://github.com/archlinux/aur.git
 BINDER_DIR=$(mktemp -d)/aur_binder
-WAYDROID_SCRIPT=https://github.com/casualsnek/waydroid_script.git
+WWAYDROID_SCRIPT=https://github.com/WayDroid-ATV/waydroid_script
 WAYDROID_SCRIPT_DIR=$(mktemp -d)/waydroid_script
 FREE_HOME=$(df /home --output=avail | tail -n1)
 FREE_VAR=$(df /var --output=avail | tail -n1)
@@ -25,7 +25,11 @@ PLUGIN_LOADER=/home/deck/homebrew/services/PluginLoader
 ANDROID_INSTALL_CHOICE=''
 
 # android TV builds
-#ANDROID13_TV_IMG=https://github.com/supechicken/waydroid-androidtv-build/releases/download/20250913/lineage-20.0-20250913-UNOFFICIAL-WayDroidATV_x86_64.zip
+#ANDROID13_TV_IMG=https://github.com/supechicken/waydroid-androidtv-build/releases/download/20250913/lineage-20.0-20250913-UNOFFICIAL-WayDroidATV_x86_64.zip#
+ANDROID_14_IMG=https://github.com/WayDroid-ATV/waydroid-builds/releases/download/20260224/lineage-22.2-20260224-UNOFFICIAL-waydroid_x86_64.zip
+ANDROID_14_HASH=6d08847141fe3668704bd5a9acb345cf2a8f295ccbc8e7cfb9c60149ca7b805b
+#ANDROID_14_IMG=https://github.com/WayDroid-ATV/waydroid-builds/releases/download/20260125/lineage-21.0-20260125-UNOFFICIAL-waydroid_x86_64.zip
+#ANDROID_14_HASH=68019da4e0629d9cb1ba5abb0ec385091a2172e441aec78768f7e473d6f581eb
 
 ANDROID13_TV_IMG=https://github.com/supechicken/waydroid-androidtv-build/releases/download/20250811/lineage-20.0-20250811-UNOFFICIAL-WayDroidATV_x86_64.zip
 
@@ -269,6 +273,10 @@ else
 
 		elif [ "$Choice" == "A13_GAPPS" ]
 		then
+
+			#prepare_custom_image_location
+			#download_image $ANDROID_14_IMG $ANDROID_14_HASH $HOME/.waydroid/custom/android15 "Android 15"
+
 			echo Initializing Waydroid.
 			echo -e "$current_password\n" | sudo -S waydroid init -s GAPPS
 			check_waydroid_init
