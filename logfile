@@ -14,7 +14,6 @@ Developers:
     distrobox/toolbox
 
 
-:: Disabling read-only mode
 ;; Deleting existing pacman keyring
 + rm -rf --one-file-system /etc/pacman.d/gnupg/
 :: Initializing pacman keyring
@@ -27,7 +26,7 @@ gpg: migration succeeded
 ==> Generating pacman master key. This may take some time.
 gpg: Generating pacman keyring master key...
 gpg: directory '/etc/pacman.d/gnupg/openpgp-revocs.d' created
-gpg: revocation certificate stored as '/etc/pacman.d/gnupg/openpgp-revocs.d/CC15E82F8A88AB8DC4EE4D011E8B8D6267DB6CBD.rev'
+gpg: revocation certificate stored as '/etc/pacman.d/gnupg/openpgp-revocs.d/BDA59FEA400043FD3A4690385C199413BF84A434.rev'
 gpg: Done
 ==> Updating trust database...
 gpg: marginals needed: 3  completes needed: 1  trust model: pgp
@@ -49,31 +48,31 @@ gpg: setting ownertrust to 4
 gpg: setting ownertrust to 4
 gpg: setting ownertrust to 4
 ==> Disabling revoked keys in keyring...
-  -> Disabled 45 keys.
+  -> Disabled 50 keys.
 ==> Updating trust database...
 gpg: Note: third-party key signatures using the SHA1 algorithm are rejected
 gpg: (use option "--allow-weak-key-signatures" to override)
 gpg: marginals needed: 3  completes needed: 1  trust model: pgp
 gpg: depth: 0  valid:   1  signed:  10  trust: 0-, 0q, 0n, 0m, 0f, 1u
-gpg: depth: 1  valid:  10  signed:  80  trust: 0-, 0q, 0n, 10m, 0f, 0u
-gpg: depth: 2  valid:  58  signed:  15  trust: 58-, 0q, 0n, 0m, 0f, 0u
-gpg: next trustdb check due at 2026-06-08
+gpg: depth: 1  valid:  10  signed:  89  trust: 0-, 0q, 0n, 10m, 0f, 0u
+gpg: depth: 2  valid:  63  signed:  15  trust: 63-, 0q, 0n, 0m, 0f, 0u
+gpg: next trustdb check due at 2026-10-25
 
 :: Developer mode enabled
 ::   See also `steamos-unminimize --dev` to recover package files pruned
 ::   from the image and install development packages.
 *** pacman install dependencies for binder ***
-warning: fakeroot-1.36.2-1 is up to date -- reinstalling
-warning: debugedit-5.1-1 is up to date -- reinstalling
+warning: fakeroot-1.37.1.2-1 is up to date -- reinstalling
+warning: debugedit-5.2-1 is up to date -- reinstalling
 warning: dkms-3.0.7-1.1 is up to date -- reinstalling
-warning: plymouth-22.02.122-1.6 is up to date -- reinstalling
-warning: linux-neptune-611-headers-6.11.11.valve29-1 is up to date -- reinstalling
+warning: plymouth-22.02.122-7.5 is up to date -- reinstalling
+warning: linux-neptune-618-headers-6.18.50.valve2-1 is up to date -- reinstalling
 resolving dependencies...
 looking for conflicting packages...
 
-Packages (5) debugedit-5.1-1  dkms-3.0.7-1.1  fakeroot-1.36.2-1  linux-neptune-611-headers-6.11.11.valve29-1  plymouth-22.02.122-1.6
+Packages (5) debugedit-5.2-1  dkms-3.0.7-1.1  fakeroot-1.37.1.2-1  linux-neptune-618-headers-6.18.50.valve2-1  plymouth-22.02.122-7.5
 
-Total Installed Size:  135.80 MiB
+Total Installed Size:  147.60 MiB
 Net Upgrade Size:        0.00 MiB
 
 :: Proceed with installation? [Y/n] 
@@ -84,29 +83,30 @@ checking for file conflicts...
 checking available disk space...
 :: Running pre-transaction hooks...
 (1/1) Remove upgraded DKMS modules
-==> dkms remove --no-depmod binder/1 -k 6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac
+==> dkms remove --no-depmod binder/1 -k 6.18.50-valve2-1-neptune-618-gc7289a96b14d
 :: Processing package changes...
 reinstalling fakeroot...
 reinstalling debugedit...
 reinstalling dkms...
 reinstalling plymouth...
-reinstalling linux-neptune-611-headers...
+reinstalling linux-neptune-618-headers...
 :: Running post-transaction hooks...
 (1/5) Reloading system manager configuration...
 (2/5) Restarting marked services...
 (3/5) Arming ConditionNeedsUpdate...
 (4/5) Updating module dependencies...
 (5/5) Updating linux initcpios...
-==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-611.preset: 'default'
+==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-618.preset: 'default'
 ==> Using default configuration file: '/etc/mkinitcpio.conf'
-  -> -k /boot/vmlinuz-linux-neptune-611 -g /boot/initramfs-linux-neptune-611.img
+  -> -k /boot/vmlinuz-linux-neptune-618 -g /boot/initramfs-linux-neptune-618.img
 ==> Using drop-in configuration file: '20-steamdeck.conf'
-==> Starting build: '6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac'
+==> Starting build: '6.18.50-valve2-1-neptune-618-gc7289a96b14d'
   -> Running build hook: [base]
   -> Running build hook: [udev]
+  -> Running build hook: [plymouth]
   -> Running build hook: [steamos]
   -> Running build hook: [steam-deck]
-==> WARNING: Possibly missing firmware for module: 'xhci_pci'
+==> WARNING: Possibly missing firmware for module: 'xhci_pci_renesas'
   -> Running build hook: [modconf]
   -> Running build hook: [keyboard]
   -> Running build hook: [block]
@@ -114,19 +114,20 @@ reinstalling linux-neptune-611-headers...
 ==> WARNING: Possibly missing '/bin/bash' for script: /usr/bin/mount.steamos
   -> Running build hook: [resume]
 ==> Generating module dependencies
-==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-611.img'
+==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-618.img'
   -> Early uncompressed CPIO image generation successful
 ==> Initcpio image generation successful
-==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-611.preset: 'fallback'
+==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-618.preset: 'fallback'
 ==> Using default configuration file: '/etc/mkinitcpio.conf'
-  -> -k /boot/vmlinuz-linux-neptune-611 -g /boot/initramfs-linux-neptune-611-fallback.img -S autodetect
+  -> -k /boot/vmlinuz-linux-neptune-618 -g /boot/initramfs-linux-neptune-618-fallback.img -S autodetect
 ==> Using drop-in configuration file: '20-steamdeck.conf'
-==> Starting build: '6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac'
+==> Starting build: '6.18.50-valve2-1-neptune-618-gc7289a96b14d'
   -> Running build hook: [base]
   -> Running build hook: [udev]
+  -> Running build hook: [plymouth]
   -> Running build hook: [steamos]
   -> Running build hook: [steam-deck]
-==> WARNING: Possibly missing firmware for module: 'xhci_pci'
+==> WARNING: Possibly missing firmware for module: 'xhci_pci_renesas'
   -> Running build hook: [modconf]
   -> Running build hook: [keyboard]
   -> Running build hook: [block]
@@ -134,24 +135,33 @@ reinstalling linux-neptune-611-headers...
 ==> WARNING: Possibly missing '/bin/bash' for script: /usr/bin/mount.steamos
   -> Running build hook: [resume]
 ==> Generating module dependencies
-==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-611-fallback.img'
+==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-618-fallback.img'
   -> Early uncompressed CPIO image generation successful
 ==> Initcpio image generation successful
 *** build and install binder from source ***
-==> Making package: binder_linux-dkms 6.19-2 (Thu 04 Jun 2026 07:40:34 PM +07)
+==> Making package: binder_linux-dkms 7.1-3 (Thu 22 Oct 2026 09:07:10 PM PDT)
 ==> Checking runtime dependencies...
 ==> Checking buildtime dependencies...
 ==> Retrieving sources...
-  -> Downloading anbox-modules-a6aa97d65ba990a470bd015aba682b9f7763129e.tar.gz...
+  -> Downloading anbox-modules-3f65f66a87b2323e56bd0d68993524d034d8b720.tar.gz...
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-100 69266    0 69266    0     0  77774      0 --:--:-- --:--:-- --:--:-- 77774
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 13094    0 13094    0     0  16954      0 --:--:-- --:--:-- --:--:-- 16954100 69370    0 69370    0     0  85612      0 --:--:-- --:--:-- --:--:-- 1485k
+  -> Downloading anbox-modules-pr-29.diff...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  7239    0  7239    0     0   8399      0 --:--:-- --:--:-- --:--:--  8399100  7239    0  7239    0     0   8396      0 --:--:-- --:--:-- --:--:--     0
 ==> Validating source files with sha256sums...
-    anbox-modules-a6aa97d65ba990a470bd015aba682b9f7763129e.tar.gz ... Passed
+    anbox-modules-3f65f66a87b2323e56bd0d68993524d034d8b720.tar.gz ... Passed
+    anbox-modules-pr-29.diff ... Passed
 ==> Extracting sources...
-  -> Extracting anbox-modules-a6aa97d65ba990a470bd015aba682b9f7763129e.tar.gz with bsdtar
+  -> Extracting anbox-modules-3f65f66a87b2323e56bd0d68993524d034d8b720.tar.gz with bsdtar
 ==> Starting prepare()...
+Applying anbox-modules-pr-29.diff...
+patching file binder/binder_alloc.c
+patching file binder/deps.c
 ==> Entering fakeroot environment...
 ==> Starting package()...
 ==> Tidying install...
@@ -167,15 +177,15 @@ reinstalling linux-neptune-611-headers...
   -> Generating .MTREE file...
   -> Compressing package...
 ==> Leaving fakeroot environment.
-==> Finished making: binder_linux-dkms 6.19-2 (Thu 04 Jun 2026 07:40:37 PM +07)
-warning: binder_linux-dkms-6.19-2 is up to date -- reinstalling
+==> Finished making: binder_linux-dkms 7.1-3 (Thu 22 Oct 2026 09:07:15 PM PDT)
+warning: binder_linux-dkms-7.1-3 is up to date -- reinstalling
 loading packages...
 resolving dependencies...
 looking for conflicting packages...
 
-Packages (1) binder_linux-dkms-6.19-2
+Packages (1) binder_linux-dkms-7.1-3
 
-Total Installed Size:  0.27 MiB
+Total Installed Size:  0.28 MiB
 Net Upgrade Size:      0.00 MiB
 
 :: Proceed with installation? [Y/n] 
@@ -186,25 +196,25 @@ checking for file conflicts...
 checking available disk space...
 :: Running pre-transaction hooks...
 (1/1) Remove upgraded DKMS modules
-==> dkms remove binder/1
 :: Processing package changes...
 reinstalling binder_linux-dkms...
 :: Running post-transaction hooks...
 (1/3) Arming ConditionNeedsUpdate...
 (2/3) Install DKMS modules
-==> dkms install --no-depmod binder/1 -k 6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac
-==> depmod 6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac
+==> dkms install --no-depmod binder/1 -k 6.18.50-valve2-1-neptune-618-gc7289a96b14d
+==> depmod 6.18.50-valve2-1-neptune-618-gc7289a96b14d
 (3/3) Updating linux initcpios...
-==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-611.preset: 'default'
+==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-618.preset: 'default'
 ==> Using default configuration file: '/etc/mkinitcpio.conf'
-  -> -k /boot/vmlinuz-linux-neptune-611 -g /boot/initramfs-linux-neptune-611.img
+  -> -k /boot/vmlinuz-linux-neptune-618 -g /boot/initramfs-linux-neptune-618.img
 ==> Using drop-in configuration file: '20-steamdeck.conf'
-==> Starting build: '6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac'
+==> Starting build: '6.18.50-valve2-1-neptune-618-gc7289a96b14d'
   -> Running build hook: [base]
   -> Running build hook: [udev]
+  -> Running build hook: [plymouth]
   -> Running build hook: [steamos]
   -> Running build hook: [steam-deck]
-==> WARNING: Possibly missing firmware for module: 'xhci_pci'
+==> WARNING: Possibly missing firmware for module: 'xhci_pci_renesas'
   -> Running build hook: [modconf]
   -> Running build hook: [keyboard]
   -> Running build hook: [block]
@@ -212,19 +222,20 @@ reinstalling binder_linux-dkms...
 ==> WARNING: Possibly missing '/bin/bash' for script: /usr/bin/mount.steamos
   -> Running build hook: [resume]
 ==> Generating module dependencies
-==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-611.img'
+==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-618.img'
   -> Early uncompressed CPIO image generation successful
 ==> Initcpio image generation successful
-==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-611.preset: 'fallback'
+==> Building image from preset: /etc/mkinitcpio.d/linux-neptune-618.preset: 'fallback'
 ==> Using default configuration file: '/etc/mkinitcpio.conf'
-  -> -k /boot/vmlinuz-linux-neptune-611 -g /boot/initramfs-linux-neptune-611-fallback.img -S autodetect
+  -> -k /boot/vmlinuz-linux-neptune-618 -g /boot/initramfs-linux-neptune-618-fallback.img -S autodetect
 ==> Using drop-in configuration file: '20-steamdeck.conf'
-==> Starting build: '6.11.11-valve29-1-neptune-611-g2dcfaf4df7ac'
+==> Starting build: '6.18.50-valve2-1-neptune-618-gc7289a96b14d'
   -> Running build hook: [base]
   -> Running build hook: [udev]
+  -> Running build hook: [plymouth]
   -> Running build hook: [steamos]
   -> Running build hook: [steam-deck]
-==> WARNING: Possibly missing firmware for module: 'xhci_pci'
+==> WARNING: Possibly missing firmware for module: 'xhci_pci_renesas'
   -> Running build hook: [modconf]
   -> Running build hook: [keyboard]
   -> Running build hook: [block]
@@ -232,18 +243,18 @@ reinstalling binder_linux-dkms...
 ==> WARNING: Possibly missing '/bin/bash' for script: /usr/bin/mount.steamos
   -> Running build hook: [resume]
 ==> Generating module dependencies
-==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-611-fallback.img'
+==> Creating zstd-compressed initcpio image: '/boot/initramfs-linux-neptune-618-fallback.img'
   -> Early uncompressed CPIO image generation successful
 ==> Initcpio image generation successful
-warning: wlroots-0.18.2-1 is up to date -- reinstalling
-warning: cage-0.2.0-2 is up to date -- reinstalling
-warning: wlr-randr-0.4.1-4 is up to date -- reinstalling
+*** pacman install cage ***
+warning: cage-0.2.0-3 is up to date -- reinstalling
+warning: wlr-randr-0.5.0-1 is up to date -- reinstalling
 resolving dependencies...
 looking for conflicting packages...
 
-Packages (3) cage-0.2.0-2  wlr-randr-0.4.1-4  wlroots-0.18.2-1
+Packages (2) cage-0.2.0-3  wlr-randr-0.5.0-1
 
-Total Installed Size:  1.50 MiB
+Total Installed Size:  0.08 MiB
 Net Upgrade Size:      0.00 MiB
 
 :: Proceed with installation? [Y/n] 
@@ -253,7 +264,6 @@ loading package files...
 checking for file conflicts...
 checking available disk space...
 :: Processing package changes...
-reinstalling wlroots...
 reinstalling cage...
 Cage's necessary privileges can now be obtained through seatd as well as the
 incumbent polkit package. As such, polkit has been relegated to an optional
@@ -269,18 +279,18 @@ reinstalling wlr-randr...
 :: Running post-transaction hooks...
 (1/1) Arming ConditionNeedsUpdate...
 *** pacman install waydroid packages ***
-warning: libgbinder-1.1.43-2 is up to date -- reinstalling
+warning: downgrading package libgbinder (1.1.45-1 => 1.1.43-2)
 warning: libglibutil-1.0.81-1 is up to date -- reinstalling
-warning: python-gbinder-1.3.0-1 is up to date -- reinstalling
-warning: waydroid-1.6.2-1 is up to date -- reinstalling
+warning: downgrading package python-gbinder (1.3.1-1 => 1.3.0-1)
+warning: downgrading package waydroid (1.6.3-1 => 1.6.2-1)
 loading packages...
 resolving dependencies...
 looking for conflicting packages...
 
 Packages (4) libgbinder-1.1.43-2  libglibutil-1.0.81-1  python-gbinder-1.3.0-1  waydroid-1.6.2-1
 
-Total Installed Size:  1.74 MiB
-Net Upgrade Size:      0.00 MiB
+Total Installed Size:   1.74 MiB
+Net Upgrade Size:      -0.01 MiB
 
 :: Proceed with installation? [Y/n] 
 checking keyring...
@@ -290,9 +300,42 @@ checking for file conflicts...
 checking available disk space...
 :: Processing package changes...
 reinstalling libglibutil...
-reinstalling libgbinder...
-reinstalling python-gbinder...
-reinstalling waydroid...
+downgrading libgbinder...
+downgrading python-gbinder...
+downgrading waydroid...
+:: Running post-transaction hooks...
+(1/6) Reloading system manager configuration...
+(2/6) Restarting marked services...
+(3/6) Arming ConditionNeedsUpdate...
+(4/6) Reloading system bus configuration...
+(5/6) Updating icon theme caches...
+(6/6) Updating the desktop file MIME type cache...
+*** pacman install android 16 waydroid packages ***
+libgbinder-1.1.45-1-x86_64.pkg.tar.zst: OK
+libglibutil-1.0.81-1-x86_64.pkg.tar.zst: OK
+python-gbinder-1.3.1-1-x86_64.pkg.tar.zst: OK
+waydroid-1.6.3-1-any.pkg.tar.zst: OK
+warning: libglibutil-1.0.81-1 is up to date -- reinstalling
+loading packages...
+resolving dependencies...
+looking for conflicting packages...
+
+Packages (4) libgbinder-1.1.45-1  libglibutil-1.0.81-1  python-gbinder-1.3.1-1  waydroid-1.6.3-1
+
+Total Installed Size:  1.74 MiB
+Net Upgrade Size:      0.01 MiB
+
+:: Proceed with installation? [Y/n] 
+checking keyring...
+checking package integrity...
+loading package files...
+checking for file conflicts...
+checking available disk space...
+:: Processing package changes...
+reinstalling libglibutil...
+upgrading libgbinder...
+upgrading python-gbinder...
+upgrading waydroid...
 :: Running post-transaction hooks...
 (1/6) Reloading system manager configuration...
 (2/6) Restarting marked services...

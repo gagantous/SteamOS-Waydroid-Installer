@@ -116,7 +116,8 @@ then
 	echo "*** build and install binder from source ***" &>> $LOGFILE
 	cd $BINDER_DIR && makepkg -f &>> $LOGFILE && \
 		echo -e "$current_password\n" | sudo -S pacman -U --noconfirm binder_linux-dkms*.zst &>> $LOGFILE && \
-		echo -e "$current_password\n" | sudo -S modprobe binder_linux device=binder,hwbinder,vndbinder &>> $LOGFILE
+		{ echo -e "$current_password\n" | sudo -S modprobe -r binder_linux &>> $LOGFILE || true; } && \
+		echo -e "$current_password\n" | sudo -S modprobe binder_linux devices=binder,hwbinder,vndbinder &>> $LOGFILE
 
 	if [ $? -eq 0 ]	
 	then
