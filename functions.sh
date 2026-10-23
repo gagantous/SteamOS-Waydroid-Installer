@@ -115,6 +115,58 @@ download_image () {
 	echo -e "$current_password\n" | sudo -S rm $dest_zip
 }
 
+install_android16_packages () {
+	# Android 16 is API 36 and needs the aidl6 servicemanager protocol -
+	# waydroid 1.6.3 (from Arch extra) and libgbinder 1.1.45 or newer. 1.6.2 falls back to aidl3
+	local pkg_dir=$SCRIPT_DIR/waydroid/A16_packages
+
+	echo Installing waydroid 1.6.3 and libgbinder 1.1.45 needed by Android 16.
+	echo "*** pacman install android 16 waydroid packages ***" &>> $LOGFILE
+	(cd $pkg_dir && sha256sum -c SHA256SUMS) &>> $LOGFILE
+	if [ $? -ne 0 ]
+	then
+		echo sha256 hash mismatch for the Android 16 waydroid packages.
+		cleanup_exit
+	fi
+
+	echo -e "$current_password\n" | sudo -S pacman -U --noconfirm $pkg_dir/libglibutil*.zst $pkg_dir/libgbinder*.zst \
+		$pkg_dir/python-gbinder*.zst $pkg_dir/waydroid*.zst &>> $LOGFILE
+	if [ $? -eq 0 ]
+	then
+		echo Waydroid $(pacman -Q waydroid | cut -d " " -f2) has been installed!
+		echo -e "$current_password\n" | sudo -S systemctl disable waydroid-container.service
+	else
+		echo Error installing the Android 16 waydroid packages.
+		cleanup_exit
+	fi
+}
+
+install_android16 () {
+	# WayDroid-ATV Android 16 (LineageOS 23.2) - system and vendor ship as separate zips on GitHub releases
+	# takes GAPPS or VANILLA as $1
+	local variant=$1
+	local system_img
+	local system_hash
+
+	if [ "$variant" == "GAPPS" ]
+	then
+		system_img=$ANDROID_16_GAPPS_IMG
+		system_hash=$ANDROID_16_GAPPS_HASH
+	else
+		system_img=$ANDROID_16_VANILLA_IMG
+		system_hash=$ANDROID_16_VANILLA_HASH
+	fi
+
+	install_android16_packages
+	prepare_custom_image_location
+	download_image $system_img $system_hash $HOME/.waydroid/custom/android16_system "Android 16 $variant system"
+	download_image $ANDROID_16_VENDOR_IMG $ANDROID_16_VENDOR_HASH $HOME/.waydroid/custom/android16_vendor "Android 16 vendor"
+
+	echo Initializing Waydroid.
+	echo -e "$current_password\n" | sudo -S waydroid init
+	check_waydroid_init
+}
+
 # Cloning Repo waydroids script from casualsnek
 cloning_repo_waydroid_script () {
 

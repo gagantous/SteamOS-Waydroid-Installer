@@ -31,6 +31,15 @@ ANDROID_14_HASH=6d08847141fe3668704bd5a9acb345cf2a8f295ccbc8e7cfb9c60149ca7b805b
 #ANDROID_14_IMG=https://github.com/WayDroid-ATV/waydroid-builds/releases/download/20260125/lineage-21.0-20260125-UNOFFICIAL-waydroid_x86_64.zip
 #ANDROID_14_HASH=68019da4e0629d9cb1ba5abb0ec385091a2172e441aec78768f7e473d6f581eb
 
+# android 16 builds - WayDroid-ATV LineageOS 23.2, separate system and vendor zips
+ANDROID_16_RELEASE=https://github.com/WayDroid-ATV/waydroid-builds/releases/download/20260717
+ANDROID_16_GAPPS_IMG=$ANDROID_16_RELEASE/lineage-23.2-20260717-GAPPS-waydroid_x86_64-system.zip
+ANDROID_16_GAPPS_HASH=f64a746f2ec50417ebb363ad1da1104d5cc71bb39d89ff21a264b5cacaeb006a
+ANDROID_16_VANILLA_IMG=$ANDROID_16_RELEASE/lineage-23.2-20260717-VANILLA-waydroid_x86_64-system.zip
+ANDROID_16_VANILLA_HASH=152e0f5c01cf10cc4c7ec93723c286308a06cb1334e6eeb4a4039cb345f97ae4
+ANDROID_16_VENDOR_IMG=$ANDROID_16_RELEASE/lineage-23.2-20260717-MAINLINE-waydroid_x86_64-vendor.zip
+ANDROID_16_VENDOR_HASH=28dfbd0e423dff6d5c7d2e34e15011fbaf4865da769d9923b84656d87e9f4d3c
+
 ANDROID13_TV_IMG=https://github.com/supechicken/waydroid-androidtv-build/releases/download/20250811/lineage-20.0-20250811-UNOFFICIAL-WayDroidATV_x86_64.zip
 
 # android TV hash
@@ -273,6 +282,8 @@ else
 		TRUE A13_GAPPS "Download official Android 13 image with Google Play Store."\
 		FALSE A13_NO_GAPPS "Download official Android 13 image without Google Play Store."\
 		FALSE TV13_GAPPS "Download unofficial Android 13 TV image with Google Play Store - thanks SupeChicken666 for the image!" \
+		FALSE A16_GAPPS "Download unofficial Android 16 image with Google Play Store from GitHub - WayDroid-ATV build, no libndk/libhoudini."\
+		FALSE A16_NO_GAPPS "Download unofficial Android 16 image without Google Play Store from GitHub - WayDroid-ATV build, no libndk/libhoudini."\
 		FALSE EXIT "***** Exit this script *****")
 
 		if [ $? -eq 1 ] || [ "$Choice" == "EXIT" ]
@@ -307,30 +318,44 @@ else
 			echo Initializing Waydroid.
  			echo -e "$current_password\n" | sudo -S waydroid init
 			check_waydroid_init
-			
+
+		elif [ "$Choice" == "A16_GAPPS" ]
+		then
+			install_android16 GAPPS
+
+		elif [ "$Choice" == "A16_NO_GAPPS" ]
+		then
+			install_android16 VANILLA
+
 		fi
 	# store android install selection
 	ANDROID_INSTALL_CHOICE=$Choice
 
-	# choose your arm translation
-	Choice=$(zenity --width 1040 --height 320 --list --radiolist --multiple \
-		--title "SteamOS Waydroid Installer  - https://github.com/ryanrudolfoba/SteamOS-Waydroid-Installer"\
-		--column "Select One" \
-		--column "Option" \
-		--column="Description - Read this carefully!"\
-		TRUE libndk "libndk arm translation, better for AMD CPUs (Internet Connection Required)"\
-		FALSE libhoudini "libhoudini arm translation, better for Intel CPUs (Internet Connection Required)"\
-		FALSE EXIT "***** Exit this script *****")
+	# waydroid_script only has libndk / libhoudini / widevine for Android 11 and 13
+	if [[ "$ANDROID_INSTALL_CHOICE" == A16_* ]]
+	then
+		echo Android 16 selected. Skipping libndk/libhoudini and widevine, waydroid_script only supports Android 11 and 13.
+	else
+		# choose your arm translation
+		Choice=$(zenity --width 1040 --height 320 --list --radiolist --multiple \
+			--title "SteamOS Waydroid Installer  - https://github.com/ryanrudolfoba/SteamOS-Waydroid-Installer"\
+			--column "Select One" \
+			--column "Option" \
+			--column="Description - Read this carefully!"\
+			TRUE libndk "libndk arm translation, better for AMD CPUs (Internet Connection Required)"\
+			FALSE libhoudini "libhoudini arm translation, better for Intel CPUs (Internet Connection Required)"\
+			FALSE EXIT "***** Exit this script *****")
 
-	if [ $? -eq 1 ] || [ "$Choice" == "EXIT" ]
-		then
-			echo User pressed CANCEL / EXIT. Goodbye!
-			cleanup_exit
-		fi
+		if [ $? -eq 1 ] || [ "$Choice" == "EXIT" ]
+			then
+				echo User pressed CANCEL / EXIT. Goodbye!
+				cleanup_exit
+			fi
 
-	# run casualsnek / aleasto waydroid_script
-	echo Install libndk/libhoudini, widevine and fingerprint spoof.
-	install_android_extras "$Choice"
+		# run casualsnek / aleasto waydroid_script
+		echo Install libndk/libhoudini, widevine and fingerprint spoof.
+		install_android_extras "$Choice"
+	fi
 
 	# copy custom config for root and spoof
 	copy_android_custom_config
